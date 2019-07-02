@@ -18,7 +18,9 @@ if (BUILD_SHARED_LIBS)
                                                SOVERSION ${OPENTRACING_VERSION_MAJOR})
   target_link_libraries(opentracing_mocktracer PUBLIC opentracing)
   target_compile_definitions(opentracing_mocktracer PRIVATE OPENTRACING_MOCK_TRACER_EXPORTS)
-  install(TARGETS opentracing_mocktracer EXPORT OpenTracingTargets
+  install(TARGETS opentracing_mocktracer
+          COMPONENT DIST
+          EXPORT OpenTracingTargets
           LIBRARY DESTINATION ${LIB_INSTALL_DIR}
           ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 
@@ -31,7 +33,7 @@ if (BUILD_STATIC_LIBS)
   if (NOT WIN32)
     set_target_properties(opentracing_mocktracer-static PROPERTIES OUTPUT_NAME opentracing_mocktracer)
   endif()
-  target_compile_definitions(opentracing_mocktracer-static PRIVATE OPENTRACING_MOCK_TRACER_STATIC)
+  target_compile_definitions(opentracing_mocktracer-static PUBLIC OPENTRACING_MOCK_TRACER_STATIC)
   target_include_directories(opentracing_mocktracer-static INTERFACE "$<INSTALL_INTERFACE:include/>")
   target_link_libraries(opentracing_mocktracer-static opentracing-static)
   install(TARGETS opentracing_mocktracer-static EXPORT OpenTracingTargets
