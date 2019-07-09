@@ -1,6 +1,9 @@
 cc_library(
     name = "opentracing",
-    srcs = glob(["src/**/*.cpp"], exclude=["src/dynamic_load_unsupported.cpp", "src/dynamic_load_windows.cpp"]),
+    srcs = select({
+      "@bazel_tools//src/conditions:windows": glob(["src/**/*.cpp"], exclude=["src/dynamic_load_unsupported.cpp", "src/dynamic_load_unix.cpp"]),
+      "//conditions:default": glob(["src/**/*.cpp"], exclude=["src/dynamic_load_unsupported.cpp", "src/dynamic_load_windows.cpp"]),
+    }),
     hdrs = glob(["include/opentracing/**/*.h"]) + [
         ":include/opentracing/config.h",
         ":include/opentracing/version.h",
@@ -11,9 +14,10 @@ cc_library(
       "//3rd_party:expected",
       "//3rd_party:variant",
     ],
-    linkopts = [
-      "-ldl",
-    ],
+    linkopts = select({
+      "@bazel_tools//src/conditions:windows": [],
+      "//conditions:default": ["-ldl"],
+    }),
 )
 
 genrule(
